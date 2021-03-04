@@ -1,4 +1,4 @@
-package com.example.finalproject
+package com.egghead.events
 
 import org.junit.Test
 

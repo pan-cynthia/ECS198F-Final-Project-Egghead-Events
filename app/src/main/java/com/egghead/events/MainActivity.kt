@@ -1,4 +1,4 @@
-package com.example.finalproject
+package com.egghead.events
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

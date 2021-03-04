@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "852744427252",
+    "project_id": "egghead-events",
+    "storage_bucket": "egghead-events.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:852744427252:android:bffaa4c94b5f9aa2d2b0a1",
+        "android_client_info": {
+          "package_name": "com.egghead.events"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "852744427252-kk6f53incoie4sfq1b394160di3dgbd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApxN9SR0dZtEJRuXatm79-lol9zkUD3uw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "852744427252-kk6f53incoie4sfq1b394160di3dgbd6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,12 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.contract.ActivityResultContract
+import android.widget.Button
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 
-class HomeFragment : Fragment() {
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+/**
+ * A simple [Fragment] subclass.
+ * Use the [EventsFragment.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class EventsFragment : Fragment() {
+    private lateinit var auth: FirebaseAuth
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,5 +36,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val signoutButton = view.findViewById<Button>(R.id.signout_button)
+        signoutButton.setOnClickListener {
+            auth.signOut()
+
+            val action = R.id.action_homeFragment_to_signinFragment
+            findNavController().navigate(action)
+        }
     }
 }

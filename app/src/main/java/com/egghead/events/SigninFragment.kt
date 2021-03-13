@@ -46,5 +46,11 @@ class LoginFragment : Fragment() {
 
                 }
         }
+
+        val signinButton = view.findViewById<Button>(R.id.signin_button)
+        signinButton.setOnClickListener {
+            val action = R.id.action_signinFragment_to_signinOptionsFragment
+            findNavController().navigate(action)
+        }
     }
 }

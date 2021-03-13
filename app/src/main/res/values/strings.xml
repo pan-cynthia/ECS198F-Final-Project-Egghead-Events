@@ -13,4 +13,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="browse_anonymously">Browse Anonymously</string>
     <string name="sign_out">Sign Out</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="facebook_app_id">472550070584656</string>
+    <string name="fb_login_protocol_scheme">fb472550070584656</string>
 </resources>

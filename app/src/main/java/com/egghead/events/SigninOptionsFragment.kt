@@ -1,15 +1,31 @@
 package com.egghead.events
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -17,16 +33,53 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SigninOptionsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var callbackManager: CallbackManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val loginBtn = view.findViewById<Button>(R.id.google_button)
+        loginBtn.setOnClickListener{
+            startActivityForResult(googleSignInClient.signInIntent, 1)
         }
+
+        callbackManager = CallbackManager.Factory.create();
+
+
+        val EMAIL = "email"
+
+        val loginButton = view.findViewById<LoginButton>(R.id.login_button)
+        loginButton.setReadPermissions("email", "public_profile")
+        loginButton.setFragment(this)
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
+            override fun onSuccess(loginResult: LoginResult?) {
+                // App code
+                Log.d(tag, "Successful login")
+                firebaseAuthWithFacebook(loginResult?.accessToken?.token ?: "")
+            }
+
+            override fun onCancel() {
+                Log.d(tag, "Cancelled login")
+                // App code
+            }
+
+            override fun onError(exception: FacebookException) {
+                Log.d(tag, "Failed login")
+                // App code
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -35,22 +88,56 @@ class SigninOptionsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_signin_options, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SigninOptionsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                SigninOptionsFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        Log.d("tag", "Result")
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1){
+            handleSignInResult(GoogleSignIn.getSignedInAccountFromIntent(data))
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) { // Take in a Task API of Type GoogleSignInAccount
+        try {
+            val account = completedTask.getResult(ApiException::class.java)!! // Use complete task API to check method calls
+            Log.w("Google Sign-in", "Sign-in successful")
+            firebaseAuthWithGoogle(account.idToken!!)
+        } catch (e: ApiException) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("Google Sign-in", "signInResult:failed code=" + e.statusCode)
+        }
+    }
+
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(tag, "signInWithCredential:success")
+                        findNavController().navigate(R.id.action_signinOptionsFragment_to_homeFragment)
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(tag, "signInWithCredential:failure", task.exception)
+                        Snackbar.make(requireView(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+    }
+
+    private fun firebaseAuthWithFacebook(idToken: String) {
+        val credential = FacebookAuthProvider.getCredential(idToken)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(tag, "signInWithCredential:success")
+                        findNavController().navigate(R.id.action_signinOptionsFragment_to_homeFragment)
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(tag, "signInWithCredential:failure", task.exception)
                     }
                 }
     }

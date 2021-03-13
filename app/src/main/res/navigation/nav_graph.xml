@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_homeFragment_to_signinFragment"
             app:destination="@id/signinFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_loggedInEventFeedFragment"
+            app:destination="@id/loggedInEventFeedFragment" />
     </fragment>
     <fragment
         android:id="@+id/signinFragment"
@@ -32,11 +35,11 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_signin" >
         <action
-            android:id="@+id/action_signinFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-        <action
             android:id="@+id/action_signinFragment_to_signinOptionsFragment"
             app:destination="@id/signinOptionsFragment" />
+        <action
+            android:id="@+id/action_signinFragment_to_anonymousEventFeedFragment"
+            app:destination="@id/anonymousEventFeedFragment" />
     </fragment>
     <fragment
         android:id="@+id/signinOptionsFragment"
@@ -47,4 +50,27 @@
             android:id="@+id/action_signinOptionsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/createEventFragment"
+        android:name="com.egghead.events.CreateEventFragment"
+        android:label="fragment_create_event"
+        tools:layout="@layout/fragment_create_event" >
+        <action
+            android:id="@+id/action_createEventFragment_to_loggedInEventFeedFragment"
+            app:destination="@id/loggedInEventFeedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loggedInEventFeedFragment"
+        android:name="com.egghead.events.LoggedInEventFeedFragment"
+        android:label="fragment_logged_in_event_feed"
+        tools:layout="@layout/fragment_logged_in_event_feed" >
+        <action
+            android:id="@+id/action_loggedInEventFeedFragment_to_createEventFragment"
+            app:destination="@id/createEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/anonymousEventFeedFragment"
+        android:name="com.egghead.events.AnonymousEventFeedFragment"
+        android:label="fragment_anonymous_event_feed"
+        tools:layout="@layout/fragment_anonymous_event_feed" />
 </navigation>

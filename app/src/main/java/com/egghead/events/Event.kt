@@ -1,11 +1,14 @@
 package com.egghead.events
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
 
+@Parcelize
 data class Event(
         @DocumentId
         var documentId: String = "",
@@ -30,4 +33,5 @@ data class Event(
 
         @PropertyName("uid")
         var uid: String = ""
-)
+
+) : Parcelable

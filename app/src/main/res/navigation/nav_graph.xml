@@ -35,19 +35,10 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_signin" >
         <action
-            android:id="@+id/action_signinFragment_to_signinOptionsFragment"
-            app:destination="@id/signinOptionsFragment" />
-        <action
             android:id="@+id/action_signinFragment_to_anonymousEventFeedFragment"
             app:destination="@id/anonymousEventFeedFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/signinOptionsFragment"
-        android:name="com.egghead.events.SigninOptionsFragment"
-        android:label="fragment_signin_options"
-        tools:layout="@layout/fragment_signin_options" >
         <action
-            android:id="@+id/action_signinOptionsFragment_to_homeFragment"
+            android:id="@+id/action_signinFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment

@@ -24,7 +24,7 @@ class EventFeedFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_event_feed, container, false)
         firebase = FirebaseAuth.getInstance()
         val user = FirebaseAuth.getInstance().currentUser.isAnonymous
-        if (user == true) {
+        if (user) {
             view.findViewById<FloatingActionButton>(R.id.favorite_button).hide()
             view.findViewById<FloatingActionButton>(R.id.create_event_button).hide()
         }

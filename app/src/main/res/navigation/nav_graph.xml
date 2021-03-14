@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_eventFeedFragment"
             app:destination="@id/eventFeedFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_displayEventFragment"
+            app:destination="@id/displayEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/signinFragment"
@@ -55,5 +58,17 @@
         <action
             android:id="@+id/action_eventFeedFragment_to_createEventFragment"
             app:destination="@id/createEventFragment" />
+        <action
+            android:id="@+id/action_eventFeedFragment_to_displayEventFragment"
+            app:destination="@id/displayEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/displayEventFragment"
+        android:name="com.egghead.events.DisplayEventFragment"
+        android:label="fragment_display_event"
+        tools:layout="@layout/fragment_display_event" >
+        <argument
+            android:name="event"
+            app:argType="com.egghead.events.Event" />
     </fragment>
 </navigation>

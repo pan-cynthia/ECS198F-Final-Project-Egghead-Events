@@ -1,6 +1,7 @@
 package com.egghead.events
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,17 @@ class EventsFragment : Fragment() {
         view.findViewById<Button>(R.id.redirect_button).setOnClickListener {
             val action = R.id.action_homeFragment_to_loggedInEventFeedFragment
             findNavController().navigate(action)
+        }
+
+        view.findViewById<Button>(R.id.post_button).setOnClickListener {
+            val event: Event = Event(title="COOL EVENT", description="EVEN COOLER DESCRIPTION", location="A COOL PLACE")
+            EventFirestore.postEvent(event)
+        }
+
+        view.findViewById<Button>(R.id.get_all_button).setOnClickListener {
+            EventFirestore.getAllEvents {
+                Log.d("YEET", it.toString())
+            }
         }
     }
 }

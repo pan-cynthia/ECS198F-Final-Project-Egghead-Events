@@ -8,7 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import java.util.*
 
 class EventsFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -44,14 +48,32 @@ class EventsFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.post_button).setOnClickListener {
-            val event: Event = Event(title="COOL EVENT", description="EVEN COOLER DESCRIPTION", location="A COOL PLACE")
-            EventFirestore.postEvent(event)
+            val event: Event = Event(title="COOL EVENT", description="EVEN COOLER DESCRIPTION", location="A COOL PLACE", start=Timestamp(
+                Date(1615760000000)
+            ), end=Timestamp(
+                Date(1615760000000)
+            ))
+            EventFirestore.postEvent(event) { response ->
+                if (response == ResponseType.SUCCESS) {
+
+                } else {
+
+                }
+            }
+
+            EventFirestore.updateEvent(event) {
+                response ->
+            }
         }
 
-        view.findViewById<Button>(R.id.get_all_button).setOnClickListener {
-            EventFirestore.getAllEvents {
-                Log.d("YEET", it.toString())
-            }
+        val eventsRecyclerView: RecyclerView = view.findViewById(R.id.events_recycler_view)
+        eventsRecyclerView.layoutManager = LinearLayoutManager(this.context)
+
+        val eventListAdapter = EventListAdapter(arrayListOf(), findNavController())
+        eventsRecyclerView.adapter = eventListAdapter
+
+        EventFirestore.getAllEvents {
+            eventListAdapter.setData(it)
         }
     }
 }

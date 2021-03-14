@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        val action = R.id.action_signinFragment_to_anonymousEventFeedFragment
+                        val action = R.id.action_signinFragment_to_homeFragment
                         findNavController().navigate(action)
                     } else {
                         // If sign in fails, display a message to the user.

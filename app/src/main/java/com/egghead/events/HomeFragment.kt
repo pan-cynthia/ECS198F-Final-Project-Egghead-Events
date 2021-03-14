@@ -10,14 +10,6 @@ import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EventsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EventsFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
@@ -47,7 +39,7 @@ class EventsFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.redirect_button).setOnClickListener {
-            val action = R.id.action_homeFragment_to_loggedInEventFeedFragment
+            val action = R.id.action_homeFragment_to_eventFeedFragment
             findNavController().navigate(action)
         }
 

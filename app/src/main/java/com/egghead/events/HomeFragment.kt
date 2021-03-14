@@ -44,5 +44,10 @@ class EventsFragment : Fragment() {
             val action = R.id.action_homeFragment_to_signinFragment
             findNavController().navigate(action)
         }
+
+        view.findViewById<Button>(R.id.redirect_button).setOnClickListener {
+            val action = R.id.action_homeFragment_to_loggedInEventFeedFragment
+            findNavController().navigate(action)
+        }
     }
 }

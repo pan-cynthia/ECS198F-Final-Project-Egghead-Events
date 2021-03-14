@@ -9,5 +9,6 @@ data class Event(
         var description: String = "",
         var tags: ArrayList<String> = arrayListOf(),
         var start: Timestamp = Timestamp(Date()),
-        var end: Timestamp = Timestamp(Date())
+        var end: Timestamp = Timestamp(Date()),
+        var location: String = ""
 )

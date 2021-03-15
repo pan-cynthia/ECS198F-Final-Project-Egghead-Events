@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 
 class EventListAdapter(private var events: List<Event>, private val mNavController: NavController) : RecyclerView.Adapter<ItemViewHolder>() {
@@ -23,6 +25,12 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
             descriptionView.text = item.description
             startTimestampView.text = item.start.toString()
             endTimestampView.text = item.end.toString()
+        }
+
+        holder.fullView.setOnClickListener{
+            Log.d("click", "event item clicked on")
+            val action: NavDirections = EventFeedFragmentDirections.actionEventFeedFragmentToDisplayEventFragment(item)
+            it.findNavController().navigate(action)
         }
     }
 

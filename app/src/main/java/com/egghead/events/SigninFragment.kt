@@ -57,7 +57,7 @@ class LoginFragment : Fragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        val action = R.id.action_signinFragment_to_homeFragment
+                        val action = R.id.action_signinFragment_to_eventFeedFragment
                         findNavController().navigate(action)
                     } else {
                         // If sign in fails, display a message to the user.
@@ -131,7 +131,7 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(tag, "signInWithCredential:success")
-                    findNavController().navigate(R.id.action_signinFragment_to_homeFragment)
+                    findNavController().navigate(R.id.action_signinFragment_to_eventFeedFragment)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(tag, "signInWithCredential:failure", task.exception)
@@ -147,7 +147,7 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(tag, "signInWithCredential:success")
-                    findNavController().navigate(R.id.action_signinFragment_to_homeFragment)
+                    findNavController().navigate(R.id.action_signinFragment_to_eventFeedFragment)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(tag, "signInWithCredential:failure", task.exception)

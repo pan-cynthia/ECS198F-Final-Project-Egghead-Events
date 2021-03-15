@@ -41,6 +41,7 @@ class EventFirestore {
         }
 
         fun updateEvent(event: Event, completion: (response: ResponseType) -> Unit) {
+            Log.d("update", "entered update event")
             val firestore = FirebaseFirestore.getInstance()
             firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
 
@@ -61,7 +62,7 @@ class EventFirestore {
             val events = arrayListOf<Event>()
 
             firestore.collection("events")
-                .whereGreaterThan("end", Timestamp(Date()))
+                //.whereGreaterThan("end", Timestamp(Date()))
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {

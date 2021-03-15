@@ -23,7 +23,7 @@ class PreloadFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (FirebaseAuth.getInstance().currentUser != null) {
-            val action = R.id.action_preloadFragment_to_homeFragment
+            val action = R.id.action_preloadFragment_to_eventFeedFragment
             findNavController().navigate(action)
         } else {
             val action = R.id.action_preloadFragment_to_signinFragment

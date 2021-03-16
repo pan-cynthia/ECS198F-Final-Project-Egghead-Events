@@ -25,8 +25,9 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
         holder.apply {
             titleView.text = item.title
             descriptionView.text = item.description
+            locationView.text = item.location
 
-            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.US)
+            val formatter = SimpleDateFormat("MMM dd yyyy HH:mm", Locale.US)
             startTimestampView.text = formatter.format(item.start.toDate())
             endTimestampView.text = formatter.format(item.end.toDate())
 
@@ -76,4 +77,5 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val favoriteButton: Button = view.findViewById(R.id.event_favorite_button)
     val startTimestampView: TextView = view.findViewById(R.id.event_start_timestamp)
     val endTimestampView: TextView = view.findViewById(R.id.event_end_timestamp)
+    val locationView : TextView = view.findViewById(R.id.event_location)
 }

@@ -3,15 +3,18 @@ package com.egghead.events
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -30,6 +33,7 @@ class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
+    private lateinit var errorLabel: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,16 +44,22 @@ class LoginFragment : Fragment() {
             .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
 
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+        (activity as AppCompatActivity?)?.supportActionBar?.hide()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_signin, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        errorLabel = view.findViewById<TextView>(R.id.signin_error)
 
         val anonymousButton = view.findViewById<Button>(R.id.anonymous_button)
         anonymousButton.setOnClickListener {
@@ -99,6 +109,11 @@ class LoginFragment : Fragment() {
                 // App code
             }
         })
+
+        val customFacebookButton = view.findViewById<Button>(R.id.custom_facebook_button)
+        customFacebookButton.setOnClickListener {
+            loginButton.performClick()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -123,6 +138,8 @@ class LoginFragment : Fragment() {
         }
     }
 
+    // https://criticalgnome.com/2019/12/30/more-than-two-lines-in-snackbar/
+    // Set snackbar maxlines
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
@@ -135,7 +152,10 @@ class LoginFragment : Fragment() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(tag, "signInWithCredential:failure", task.exception)
-                    Snackbar.make(requireView(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
+                    Snackbar
+                        .make(requireView(), (task.exception?.message ?: "Signin Failed."), Snackbar.LENGTH_LONG)
+                        .apply { view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 4 }
+                        .show()
                 }
             }
     }
@@ -150,7 +170,13 @@ class LoginFragment : Fragment() {
                     findNavController().navigate(R.id.action_signinFragment_to_eventFeedFragment)
                 } else {
                     // If sign in fails, display a message to the user.
+                    LoginManager.getInstance().logOut()
                     Log.w(tag, "signInWithCredential:failure", task.exception)
+                    requireView()
+                    Snackbar
+                        .make(requireView(), (task.exception?.message ?: "Signin Failed."), Snackbar.LENGTH_LONG)
+                        .apply { view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 4 }
+                        .show()
                 }
             }
     }

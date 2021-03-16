@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_preload" >
         <action
             android:id="@+id/action_preloadFragment_to_signinFragment"
-            app:destination="@id/signinFragment" />
+            app:destination="@id/signinFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_preloadFragment_to_eventFeedFragment"
-            app:destination="@id/eventFeedFragment" />
+            app:destination="@id/eventFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/signinFragment"
@@ -24,7 +32,11 @@
         tools:layout="@layout/fragment_signin" >
         <action
             android:id="@+id/action_signinFragment_to_eventFeedFragment"
-            app:destination="@id/eventFeedFragment" />
+            app:destination="@id/eventFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/createEventFragment"
@@ -33,7 +45,11 @@
         tools:layout="@layout/fragment_create_event" >
         <action
             android:id="@+id/action_createEventFragment_to_eventFeedFragment"
-            app:destination="@id/eventFeedFragment" />
+            app:destination="@id/eventFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/eventFeedFragment"
@@ -42,13 +58,25 @@
         tools:layout="@layout/fragment_event_feed" >
         <action
             android:id="@+id/action_eventFeedFragment_to_createEventFragment"
-            app:destination="@id/createEventFragment" />
+            app:destination="@id/createEventFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_eventFeedFragment_to_displayEventFragment"
-            app:destination="@id/displayEventFragment" />
+            app:destination="@id/displayEventFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_eventFeedFragment_to_signinFragment"
-            app:destination="@id/signinFragment" />
+            app:destination="@id/signinFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/displayEventFragment"
@@ -60,10 +88,18 @@
             app:argType="com.egghead.events.Event" />
         <action
             android:id="@+id/action_displayEventFragment_to_eventFeedFragment"
-            app:destination="@id/eventFeedFragment" />
+            app:destination="@id/eventFeedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_displayEventFragment_to_updateEventFragment"
-            app:destination="@id/updateEventFragment" />
+            app:destination="@id/updateEventFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/updateEventFragment"
@@ -75,6 +111,10 @@
             app:argType="com.egghead.events.Event" />
         <action
             android:id="@+id/action_updateEventFragment_to_displayEventFragment"
-            app:destination="@id/displayEventFragment" />
+            app:destination="@id/displayEventFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 </navigation>

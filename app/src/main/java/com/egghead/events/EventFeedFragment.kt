@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.login.LoginManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_event_feed.*
@@ -93,6 +94,22 @@ class EventFeedFragment : Fragment() {
             } else {
                 eventListAdapter.setData(EventsSingleton.events)
                 favoriteButton.setImageResource(R.drawable.ic_star_unfilled_24px)
+            }
+        }
+
+        val searchButton = view.findViewById<Button>(R.id.searchfilterbutton)
+        searchButton.setOnClickListener{
+            val searchtext = view.findViewById<TextInputEditText>(R.id.searchbar).text.toString()
+            if (searchtext != ""){
+                eventListAdapter.setDataWithSearch(EventsSingleton.events, searchtext)
+            } else {
+                if (favoriteFilter) {
+                    eventListAdapter.setData(EventsSingleton.events.filter {
+                        it.favorited
+                    })
+                } else {
+                    eventListAdapter.setData(EventsSingleton.events)
+                }
             }
         }
     }

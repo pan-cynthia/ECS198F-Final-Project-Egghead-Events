@@ -16,4 +16,5 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="facebook_app_id">472550070584656</string>
     <string name="fb_login_protocol_scheme">fb472550070584656</string>
+    <string name="sign_in_with_facebook">Sign in with FaceBook</string>
 </resources>

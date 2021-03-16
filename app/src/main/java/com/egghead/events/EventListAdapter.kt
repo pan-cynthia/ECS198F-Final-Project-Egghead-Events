@@ -68,6 +68,18 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
         Log.d("EventListAdapter", "Got new posts")
         this.notifyDataSetChanged()
     }
+
+    fun setDataWithSearch(newEvents: List<Event>, search: String){
+        val tempevents = mutableListOf<Event>()
+        for (anEvent in newEvents){
+            if (anEvent.title.contains(search, ignoreCase = true) || anEvent.description.contains(search, ignoreCase = true)){
+                tempevents.add(anEvent)
+            }
+        }
+        events = tempevents
+        Log.d("EventListAdapter", "Got new posts")
+        this.notifyDataSetChanged()
+    }
 }
 
 class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {

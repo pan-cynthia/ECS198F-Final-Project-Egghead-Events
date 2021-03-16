@@ -77,7 +77,7 @@ class EventFirestore {
             val events = arrayListOf<Event>()
 
             firestore.collection("events")
-                //.whereGreaterThan("end", Timestamp(Date()))
+                .whereGreaterThan("end", Timestamp(Date()))
                 .get()
                 .addOnSuccessListener { documents ->
                     val firebaseUser = FirebaseAuth.getInstance().currentUser

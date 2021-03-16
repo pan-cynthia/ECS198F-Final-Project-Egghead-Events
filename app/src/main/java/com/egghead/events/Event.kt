@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
 import kotlinx.android.parcel.Parcelize
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 

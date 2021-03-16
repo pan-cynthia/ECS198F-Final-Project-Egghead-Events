@@ -13,8 +13,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -44,10 +44,19 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <CalendarView
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_marginBottom="20dp"
+                android:hint="Event Location">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/event_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,38 +64,25 @@
                 android:layout_marginBottom="20dp"
                 android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:hint="Event Start Time">
+                <TextView
+                    android:id="@+id/event_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="Event Start Time"
+                    android:textSize="16dp"
+                    android:background="@drawable/customborder"
+                    android:layout_weight="0.5"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/event_start"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.1" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:hint="Event End Time">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/event_end"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/event_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="Event End Time"
+                    android:textSize="16dp"
+                    android:background="@drawable/customborder"
+                    android:layout_weight="0.5"/>
 
             </LinearLayout>
 

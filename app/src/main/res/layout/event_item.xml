@@ -1,82 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/event_item"
+    android:clipToPadding="false"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:background="@drawable/customborder"
-    android:layout_margin="20dp">
-
-    <TextView
-        android:id="@+id/event_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Title">
-    </TextView>
-
-    <TextView
-        android:id="@+id/event_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description">
-    </TextView>
+    android:padding="10dp" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/event_favorite_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_star_filled_24px">
-        </Button>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.5">
-        </View>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_calendar_24px"
-            android:layout_gravity="center">
-        </ImageView>
+        android:orientation="vertical"
+        android:background="@drawable/customborder"
+        android:elevation="3dp">
 
         <TextView
-            android:id="@+id/event_start_timestamp"
+            android:id="@+id/event_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Date - End Date"
-            android:layout_gravity="center">
+            android:layout_marginBottom="16dp"
+            android:text="Event Title">
         </TextView>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.1">
-        </View>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_clock_24px"
-            android:layout_gravity="center">
-        </ImageView>
 
         <TextView
-            android:id="@+id/event_end_timestamp"
+            android:id="@+id/event_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Time - End Time"
-            android:layout_gravity="center">
+            android:layout_marginBottom="16dp"
+            android:maxLines="4"
+            android:ellipsize="end"
+            android:text="Description">
         </TextView>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/event_favorite_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_star_filled_24px">
+            </Button>
+
+            <Button
+                android:id="@+id/event_calendar_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_calendar_24px">
+            </Button>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/event_start_timestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Date - End Date"
+                    android:layout_gravity="center">
+                </TextView>
+
+
+                <TextView
+                    android:id="@+id/event_end_timestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Time - End Time"
+                    android:layout_gravity="center">
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
-
 
 </LinearLayout>

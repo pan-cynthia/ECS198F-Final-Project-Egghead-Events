@@ -11,6 +11,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EventListAdapter(private var events: List<Event>, private val mNavController: NavController) : RecyclerView.Adapter<ItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -23,8 +25,32 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
         holder.apply {
             titleView.text = item.title
             descriptionView.text = item.description
-            startTimestampView.text = item.start.toString()
-            endTimestampView.text = item.end.toString()
+
+            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.US)
+            startTimestampView.text = formatter.format(item.start.toDate())
+            endTimestampView.text = formatter.format(item.end.toDate())
+
+            favoriteButton.setOnClickListener {
+                // First update the singleton
+                EventsSingleton.events[position].favorited = !EventsSingleton.events[position].favorited
+
+                // then update the actual list on the way back
+                EventFirestore.postFavorites {
+                    setData(EventsSingleton.events)
+
+                    if (events[position].favorited) {
+                        favoriteButton.setBackgroundResource(R.drawable.ic_star_filled_24px)
+                    } else {
+                        favoriteButton.setBackgroundResource(R.drawable.ic_star_unfilled_24px)
+                    }
+                }
+            }
+
+            if (item.favorited) {
+                favoriteButton.setBackgroundResource(R.drawable.ic_star_filled_24px)
+            } else {
+                favoriteButton.setBackgroundResource(R.drawable.ic_star_unfilled_24px)
+            }
         }
 
         holder.fullView.setOnClickListener{

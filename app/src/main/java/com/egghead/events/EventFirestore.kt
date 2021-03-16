@@ -15,14 +15,29 @@ enum class ResponseType {
 
 class EventFirestore {
     companion object {
-        fun postFavorite(event: Event) {
+        fun postFavorites(completion: (response: ResponseType) -> Unit) {
             val firestore = FirebaseFirestore.getInstance()
             firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
 
-            val firebaseInstance = FirebaseAuth.getInstance()
-            if (firebaseInstance.currentUser != null) {
-                firestore.collection("users").document(firebaseInstance.currentUser.uid)
-                    .get()
+            val firebaseUser = FirebaseAuth.getInstance().currentUser
+            if (firebaseUser != null) {
+                val favoriteEvents = EventsSingleton.events.filter { entry ->
+                    entry.favorited
+                }
+
+                val favorites = favoriteEvents.map { entry ->
+                    entry.documentId
+                }
+
+                val user = User(ArrayList(favorites))
+                firestore.collection("users").document(firebaseUser.uid)
+                    .set(user)
+                    .addOnSuccessListener {
+                        completion(ResponseType.SUCCESS)
+                    }
+                    .addOnFailureListener {
+                        completion(ResponseType.FAILURE)
+                    }
             }
 
         }
@@ -65,11 +80,32 @@ class EventFirestore {
                 //.whereGreaterThan("end", Timestamp(Date()))
                 .get()
                 .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        val event = document.toObject(Event::class.java)
-                        events.add(event)
+                    val firebaseUser = FirebaseAuth.getInstance().currentUser
+
+                    if (firebaseUser != null) {
+                        firestore.collection("users")
+                            .document(firebaseUser.uid)
+                            .get()
+                            .addOnSuccessListener { userdoc ->
+                                val user = userdoc.toObject(User::class.java)
+
+                                for (document in documents) {
+                                    val event = document.toObject(Event::class.java)
+
+                                    if (event.documentId in user?.favorites ?: arrayListOf()) {
+                                        event.favorited = true
+                                    }
+
+                                    events.add(event)
+                                }
+
+                                EventsSingleton.events = events
+
+                                setEvents(EventsSingleton.events)
+                            }
                     }
-                    setEvents(events)
+
+
                 }
                 .addOnFailureListener { Log.d("API", "Event failed to write!") }
         }

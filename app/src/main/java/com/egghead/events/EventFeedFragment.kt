@@ -2,14 +2,14 @@ package com.egghead.events
 
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.login.LoginManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -19,11 +19,33 @@ import java.util.*
 class EventFeedFragment : Fragment() {
 
     private lateinit var auth : FirebaseAuth
+    private var favoriteFilter: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         auth = FirebaseAuth.getInstance()
+
+        (activity as AppCompatActivity?)?.supportActionBar?.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.standard_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                auth.signOut()
+                LoginManager.getInstance().logOut()
+
+                val action = R.id.action_eventFeedFragment_to_signinFragment
+                findNavController().navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreateView(
@@ -44,14 +66,6 @@ class EventFeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val signoutButton = view.findViewById<Button>(R.id.signout_button)
-        signoutButton.setOnClickListener {
-            auth.signOut()
-
-            val action = R.id.action_eventFeedFragment_to_signinFragment
-            findNavController().navigate(action)
-        }
-
         val eventsRecyclerView: RecyclerView = view.findViewById(R.id.events_recycler_view)
         eventsRecyclerView.layoutManager = LinearLayoutManager(this.context)
 
@@ -62,9 +76,24 @@ class EventFeedFragment : Fragment() {
             eventListAdapter.setData(it)
         }
 
-        create_event_button.setOnClickListener {
+        val createEventButton = view.findViewById<FloatingActionButton>(R.id.create_event_button)
+        createEventButton.setOnClickListener {
             val action = R.id.action_eventFeedFragment_to_createEventFragment
             findNavController().navigate(action)
+        }
+
+        val favoriteButton = view.findViewById<FloatingActionButton>(R.id.favorite_button)
+        favoriteButton.setOnClickListener {
+            favoriteFilter = !favoriteFilter
+            if (favoriteFilter) {
+                eventListAdapter.setData(EventsSingleton.events.filter {
+                    it.favorited
+                })
+                favoriteButton.setImageResource(R.drawable.ic_star_filled_24px)
+            } else {
+                eventListAdapter.setData(EventsSingleton.events)
+                favoriteButton.setImageResource(R.drawable.ic_star_unfilled_24px)
+            }
         }
     }
 }

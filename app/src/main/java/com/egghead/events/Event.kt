@@ -32,6 +32,8 @@ data class Event(
         var location: String = "",
 
         @PropertyName("uid")
-        var uid: String = ""
+        var uid: String = "",
+
+        var favorited: Boolean = false
 
 ) : Parcelable

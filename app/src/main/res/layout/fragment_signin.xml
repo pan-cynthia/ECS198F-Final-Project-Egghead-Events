@@ -1,38 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".LoginFragment">
 
 
     <ImageView
-        android:layout_width="350dp"
-        android:layout_height="250dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginVertical="20dp"
         android:layout_gravity="center"
-        android:src="@drawable/egghead"/>
+        android:background="@drawable/ic_egghead"
+        android:backgroundTint="@color/blue" />
 
     <Button
         android:id="@+id/google_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:drawableTint="@color/white"
+        android:drawableLeft="@drawable/googleg_standard_color_18"
         android:text="@string/sign_in_with_google"
         android:layout_gravity="center"
         android:layout_marginBottom="10dp"/>
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginBottom="10dp">
 
-        <Button
-            android:id="@+id/anonymous_button"
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/browse_anonymously"/>
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"/>
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/custom_facebook_button"
+            android:drawableLeft="@drawable/com_facebook_button_icon"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in_with_facebook" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/anonymous_button"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:drawableTint="@color/white"
+        android:drawableLeft="@drawable/ic_baseline_person_outline_24"
+        android:text="@string/browse_anonymously"/>
+
+    <TextView
+        android:id="@+id/signin_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

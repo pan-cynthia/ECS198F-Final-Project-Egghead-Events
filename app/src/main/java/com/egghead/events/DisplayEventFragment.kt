@@ -16,6 +16,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DisplayEventFragment : Fragment() {
 
@@ -53,11 +55,15 @@ class DisplayEventFragment : Fragment() {
         val descriptionView: TextView = view.findViewById(R.id.event_description)
         val startTimestampView: TextView = view.findViewById(R.id.event_start_timestamp)
         val endTimestampView: TextView = view.findViewById(R.id.event_end_timestamp)
+        val locationView : TextView = view.findViewById(R.id.event_location)
 
         titleView.text = event.title
         descriptionView.text = event.description
-        startTimestampView.text = event.start.toString()
-        endTimestampView.text = event.end.toString()
+        locationView.text = event.location
+
+        val formatter = SimpleDateFormat("MMM dd yyyy HH:mm", Locale.US)
+        startTimestampView.text = formatter.format(event.start.toDate())
+        endTimestampView.text = formatter.format(event.end.toDate())
 
         view.findViewById<FloatingActionButton>(R.id.edit_button).setOnClickListener {
             val action : NavDirections = DisplayEventFragmentDirections.actionDisplayEventFragmentToUpdateEventFragment(event)

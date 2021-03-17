@@ -82,14 +82,16 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
         this.notifyDataSetChanged()
     }
 
-    fun setDataWithFilter(newEvents: List<Event>, search: String, searchlocation: String, starttime: Long , endtime: Long){
+    fun setDataWithFilter(newEvents: List<Event>, search: String, searchlocation: String, starttime: Long , endtime: Long, favoriteFilter: Boolean){
         val tempevents = mutableListOf<Event>()
         for (anEvent in newEvents){
             if (anEvent.title.contains(search, ignoreCase = true) || anEvent.description.contains(search, ignoreCase = true)){
                 if (anEvent.location.contains(searchlocation, ignoreCase = true)) {
                     if (anEvent.start > Timestamp(Date(starttime)) || starttime == 0L && anEvent.end < Timestamp(Date(starttime))) {
                         if (anEvent.end < Timestamp(Date(endtime)) || endtime == 0L) {
-                            tempevents.add(anEvent)
+                            if (anEvent.favorited == true || favoriteFilter == false) {
+                                tempevents.add(anEvent)
+                            }
                         }
                     }
                 }

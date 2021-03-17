@@ -1,21 +1,29 @@
 package com.egghead.events
 
+import android.content.Intent
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.isGone
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.milliseconds
 
-class EventListAdapter(private var events: List<Event>, private val mNavController: NavController) : RecyclerView.Adapter<ItemViewHolder>() {
+class EventListAdapter(private var events: List<Event>) : RecyclerView.Adapter<ItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.event_item, parent, false)
         return ItemViewHolder(view)
@@ -25,8 +33,15 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
         val item = events[position]
         holder.apply {
             titleView.text = item.title
-            descriptionView.text = item.description
-            locationView.text = item.location
+
+            if (item.image != null) {
+                Glide.with(holder.itemView)
+                    .load(item.image)
+                    .into(imageView)
+            } else {
+                cardView.visibility = View.GONE
+                imageView.visibility = View.GONE
+            }
 
             val formatter = SimpleDateFormat("MMM dd yyyy HH:mm", Locale.US)
             startTimestampView.text = formatter.format(item.start.toDate())
@@ -46,6 +61,20 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
                         favoriteButton.setBackgroundResource(R.drawable.ic_star_unfilled_24px)
                     }
                 }
+            }
+
+            calendarButton.setOnClickListener {
+                // https://stackoverflow.com/questions/14694931/insert-event-to-calendar-using-intent
+                val intent = Intent(Intent.ACTION_EDIT)
+                intent.setType("vnd.android.cursor.item/event")
+                intent.putExtra(CalendarContract.Events.TITLE, item.title)
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.start.toDate().time)
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.end.toDate().time)
+                intent.putExtra(CalendarContract.Events.ALL_DAY, false)
+                intent.putExtra(CalendarContract.Events.DESCRIPTION, item.description)
+                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, item.location)
+
+                startActivity(itemView.context, intent, null)
             }
 
             if (item.favorited) {
@@ -106,9 +135,10 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
 class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val fullView: LinearLayout = view.findViewById(R.id.event_item)
     val titleView: TextView = view.findViewById(R.id.event_title)
-    val descriptionView: TextView = view.findViewById(R.id.event_description)
+    val cardView: CardView = view.findViewById(R.id.image_card_view)
+    val imageView: ImageView = view.findViewById(R.id.event_image)
     val favoriteButton: Button = view.findViewById(R.id.event_favorite_button)
+    val calendarButton: Button = view.findViewById(R.id.event_calendar_button)
     val startTimestampView: TextView = view.findViewById(R.id.event_start_timestamp)
     val endTimestampView: TextView = view.findViewById(R.id.event_end_timestamp)
-    val locationView : TextView = view.findViewById(R.id.event_location)
 }

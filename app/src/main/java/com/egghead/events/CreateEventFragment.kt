@@ -4,16 +4,23 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.graphics.Color.rgb
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -21,9 +28,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
-import com.google.type.DateTime
-import com.squareup.okhttp.Response
-import io.grpc.Context
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -71,10 +75,44 @@ class CreateEventFragment : Fragment() {
             chooseImage()
         }
 
+        val description = view.findViewById<EditText>(R.id.event_description)
+
+        description.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            Log.d("TEST", "TEST")
+            if (!hasFocus) {
+                this.context?.let {
+                    var offset = 0
+                    var startOffset = 0
+                    var inHashtag = false
+
+                    val color = ContextCompat.getColor(it, R.color.teal_200)
+                    val colorSpan = ForegroundColorSpan(color)
+
+                    val flag = Spannable.SPAN_INCLUSIVE_INCLUSIVE
+
+                    for (character in description.text.toString()) {
+                        if (character == '#') {
+                            startOffset = offset
+                            inHashtag = true
+                        }
+
+                        if (character == ' ') {
+                            if (inHashtag) {
+                                description.text.setSpan(colorSpan, startOffset, offset, flag)
+                            }
+                            inHashtag = false
+                        }
+
+                        offset++
+                    }
+                }
+            }
+        }
+
         view.findViewById<Button>(R.id.submit_button).setOnClickListener {
-            val title = view.findViewById<TextView>(R.id.event_title).text.toString()
-            val description = view.findViewById<TextView>(R.id.event_description).text.toString()
-            val location = view.findViewById<TextView>(R.id.event_location).text.toString()
+            val title = view.findViewById<EditText>(R.id.event_title).text.toString()
+            val description = view.findViewById<EditText>(R.id.event_description).text.toString()
+            val location = view.findViewById<EditText>(R.id.event_location).text.toString()
 
             if (title == "" || startTimeInMilliseconds == 0.toLong() || endTimeInMilliseconds == 0.toLong()) {
                 makeSnackbar("Missing required information.")
@@ -224,3 +262,4 @@ class CreateEventFragment : Fragment() {
         ).show()
     }
 }
+

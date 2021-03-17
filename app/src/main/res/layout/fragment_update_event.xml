@@ -66,22 +66,23 @@
 
                 <TextView
                     android:id="@+id/event_start"
-                    android:layout_width="match_parent"
+                    android:layout_width="300dp"
                     android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
                     android:gravity="center"
                     android:text="Event Start Time"
                     android:textSize="16dp"
-                    android:background="@drawable/customborder"
+                    android:background="@drawable/border"
                     android:layout_weight="0.5"/>
 
                 <TextView
                     android:id="@+id/event_end"
-                    android:layout_width="match_parent"
+                    android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:gravity="center"
                     android:text="Event End Time"
                     android:textSize="16dp"
-                    android:background="@drawable/customborder"
+                    android:background="@drawable/border"
                     android:layout_weight="0.5"/>
 
             </LinearLayout>

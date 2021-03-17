@@ -1,19 +1,29 @@
 package com.egghead.events
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
 import com.google.type.DateTime
+import com.squareup.okhttp.Response
+import io.grpc.Context
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,8 +31,12 @@ import java.util.*
 class CreateEventFragment : Fragment() {
 
     lateinit var firebase : FirebaseAuth
+    var eventImageView: ImageView? = null
+    var eventCardView: CardView? = null
     var startTimeInMilliseconds : Long = 0
     var endTimeInMilliseconds : Long = 0
+    var imageUri : Uri? = null
+    var imageType : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,27 +67,118 @@ class CreateEventFragment : Fragment() {
             pickDateTime(end)
         }
 
+        view.findViewById<Button>(R.id.upload_image_button).setOnClickListener {
+            chooseImage()
+        }
+
         view.findViewById<Button>(R.id.submit_button).setOnClickListener {
             val title = view.findViewById<TextView>(R.id.event_title).text.toString()
             val description = view.findViewById<TextView>(R.id.event_description).text.toString()
             val location = view.findViewById<TextView>(R.id.event_location).text.toString()
 
-            val event: Event = Event(
-                title = title,
-                description = description,
-                location = location, start = Timestamp(Date(startTimeInMilliseconds)),
-                end = Timestamp(Date(endTimeInMilliseconds)),
-                uid = user.uid
-            )
+            if (title == "" || startTimeInMilliseconds == 0.toLong() || endTimeInMilliseconds == 0.toLong()) {
+                makeSnackbar("Missing required information.")
+                return@setOnClickListener
+            } else if (startTimeInMilliseconds > endTimeInMilliseconds) {
+                makeSnackbar("Event cannot start after it ended.")
+                return@setOnClickListener
+            }
 
-            EventFirestore.postEvent(event) { response ->
+            this.uploadImage { response, downloadUrl ->
+                var event: Event? = null
+
                 if (response == ResponseType.SUCCESS) {
-                    Log.d("post", "successfully posted event")
-                    val action = R.id.action_createEventFragment_to_eventFeedFragment
-                    findNavController().navigate(action)
+                    event = Event(
+                        title = title,
+                        description = description,
+                        location = location, start = Timestamp(Date(startTimeInMilliseconds)),
+                        end = Timestamp(Date(endTimeInMilliseconds)),
+                        uid = user!!.uid,
+                        image = downloadUrl
+                    )
                 } else {
-                    Log.d("post", "could not post event")
+                    event = Event(
+                        title = title,
+                        description = description,
+                        location = location, start = Timestamp(Date(startTimeInMilliseconds)),
+                        end = Timestamp(Date(endTimeInMilliseconds)),
+                        uid = user!!.uid
+                    )
                 }
+
+                EventFirestore.postEvent(event) {
+                    if (response == ResponseType.SUCCESS) {
+                        Log.d("post", "successfully posted event")
+                        val action = R.id.action_createEventFragment_to_eventFeedFragment
+                        this.findNavController().navigate(action)
+                    } else {
+                        Log.d("post", "could not post event")
+                    }
+                }
+            }
+        }
+
+        eventImageView = view.findViewById(R.id.event_image)
+        eventImageView?.visibility = View.GONE
+
+        eventCardView = view.findViewById(R.id.image_card_view)
+        eventCardView?.visibility = View.GONE
+    }
+
+    private fun makeSnackbar(message: String) {
+        Snackbar
+            .make(requireView(), message, Snackbar.LENGTH_LONG)
+            .apply { view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 4 }
+            .show()
+    }
+
+    private fun uploadImage(completion: (response: ResponseType, downloadUrl: String) -> Unit ) {
+        imageUri?.let {
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+            val storageRef = FirebaseStorage.getInstance().reference
+            val imageRef = storageRef.child("${uid}/${imageUri?.lastPathSegment ?: "unknown.jpg"}")
+            val metadata = StorageMetadata.Builder().setContentType(imageType ?: "image/jpeg").build()
+
+            val uploadTask = imageRef.putFile(imageUri!!, metadata)
+
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        completion(ResponseType.SUCCESS, task.result.toString())
+                    } else {
+                        completion(ResponseType.FAILURE, "")
+                    }
+                }
+        } ?: run {
+            completion(ResponseType.FAILURE, "")
+        }
+
+
+    }
+
+    private fun chooseImage() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("image/*")
+        startActivityForResult(intent, 2020)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 2020) {
+            if (resultCode == Activity.RESULT_OK) {
+                imageUri = data?.data
+                imageType = data?.type
+                eventImageView?.setImageURI(imageUri)
+                eventImageView?.visibility = View.VISIBLE
+                eventCardView?.visibility = View.VISIBLE
             }
         }
     }

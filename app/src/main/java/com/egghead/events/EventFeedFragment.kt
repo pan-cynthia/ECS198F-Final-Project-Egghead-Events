@@ -28,6 +28,7 @@ class EventFeedFragment : Fragment() {
 
     private lateinit var auth : FirebaseAuth
     private var favoriteFilter: Boolean = false
+    private var eventListAdapter: EventListAdapter? = null
 
     private lateinit var alertDialog: AlertDialog
     var startTimeInMilliseconds : Long = 0
@@ -76,18 +77,22 @@ class EventFeedFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        EventFirestore.getAllEvents {
+            eventListAdapter?.setData(it)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val eventsRecyclerView: RecyclerView = view.findViewById(R.id.events_recycler_view)
         eventsRecyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        val eventListAdapter = EventListAdapter(arrayListOf(), findNavController())
+        eventListAdapter = EventListAdapter(arrayListOf())
         eventsRecyclerView.adapter = eventListAdapter
-
-        EventFirestore.getAllEvents {
-            eventListAdapter.setData(it)
-        }
 
         val createEventButton = view.findViewById<FloatingActionButton>(R.id.create_event_button)
         createEventButton.setOnClickListener {
@@ -99,12 +104,12 @@ class EventFeedFragment : Fragment() {
         favoriteButton.setOnClickListener {
             favoriteFilter = !favoriteFilter
             if (favoriteFilter) {
-                eventListAdapter.setData(EventsSingleton.events.filter {
+                eventListAdapter?.setData(EventsSingleton.events.filter {
                     it.favorited
                 })
                 favoriteButton.setImageResource(R.drawable.ic_star_filled_24px)
             } else {
-                eventListAdapter.setData(EventsSingleton.events)
+                eventListAdapter?.setData(EventsSingleton.events)
                 favoriteButton.setImageResource(R.drawable.ic_star_unfilled_24px)
             }
         }
@@ -113,14 +118,14 @@ class EventFeedFragment : Fragment() {
         searchButton.setOnClickListener{
             val searchtext = view.findViewById<TextInputEditText>(R.id.searchbar).text.toString()
             if (searchtext != ""){
-                eventListAdapter.setDataWithSearch(EventsSingleton.events, searchtext)
+                eventListAdapter?.setDataWithSearch(EventsSingleton.events, searchtext)
             } else {
                 if (favoriteFilter) {
-                    eventListAdapter.setData(EventsSingleton.events.filter {
+                    eventListAdapter?.setData(EventsSingleton.events.filter {
                         it.favorited
                     })
                 } else {
-                    eventListAdapter.setData(EventsSingleton.events)
+                    eventListAdapter?.setData(EventsSingleton.events)
                 }
             }
         }

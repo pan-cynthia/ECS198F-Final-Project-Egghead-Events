@@ -6,3 +6,6 @@ Group Members:
 4. mxwang@ucdavis.edu, Megan Wang, 914735597
 
 Google Drive Video: 
+
+Presentation Slides:
+https://docs.google.com/presentation/d/1_ojWcWDiUAAQOGTQJvhW1euumnLxpvdWrCBtI0CGXw4/edit?usp=sharing

@@ -35,6 +35,9 @@ data class Event(
         @PropertyName("uid")
         var uid: String = "",
 
+        @PropertyName("image")
+        var image: String? = null,
+
         var favorited: Boolean = false
 
 ) : Parcelable

@@ -23,6 +23,7 @@ class DisplayEventFragment : Fragment() {
 
     val args: DisplayEventFragmentArgs by navArgs()
     lateinit var firebase : FirebaseAuth
+    private var favoriteFilter: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,7 @@ class DisplayEventFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_display_event, container, false)
         view.findViewById<FloatingActionButton>(R.id.edit_button).hide()
+        view.findViewById<Button>(R.id.event_favorite_button).visibility= View.VISIBLE
         return view
     }
 
@@ -48,6 +50,9 @@ class DisplayEventFragment : Fragment() {
         if (event.uid == user.uid) {
             view.findViewById<FloatingActionButton>(R.id.edit_button).show()
         }
+        if (user.isAnonymous) {
+            view.findViewById<Button>(R.id.event_favorite_button).visibility= View.GONE
+        }
 
         Log.d("title", event.title)
 
@@ -56,10 +61,15 @@ class DisplayEventFragment : Fragment() {
         val startTimestampView: TextView = view.findViewById(R.id.event_start_timestamp)
         val endTimestampView: TextView = view.findViewById(R.id.event_end_timestamp)
         val locationView : TextView = view.findViewById(R.id.event_location)
+        val favorited: Button = view.findViewById(R.id.event_favorite_button)
 
         titleView.text = event.title
         descriptionView.text = event.description
         locationView.text = event.location
+        if (event.favorited == false){
+            favorited.setBackgroundResource(R.drawable.ic_star_unfilled_24px)
+            favoriteFilter = false
+        }
 
         val formatter = SimpleDateFormat("MMM dd yyyy HH:mm", Locale.US)
         startTimestampView.text = formatter.format(event.start.toDate())
@@ -74,5 +84,6 @@ class DisplayEventFragment : Fragment() {
             val action = R.id.action_displayEventFragment_to_eventFeedFragment
             findNavController().navigate(action)
         }
+
     }
 }

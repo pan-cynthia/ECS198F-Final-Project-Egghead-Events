@@ -159,7 +159,7 @@ class EventFeedFragment : Fragment() {
             filtersearch?.setOnClickListener {
                 val keywords = alertDialog.findViewById<TextInputEditText>(R.id.key_words)?.text.toString()
                 val location = alertDialog.findViewById<TextInputEditText>(R.id.filter_location)?.text.toString()
-                eventListAdapter.setDataWithFilter(EventsSingleton.events, keywords, location, startTimeInMilliseconds, endTimeInMilliseconds, favoriteFilter)
+                eventListAdapter?.setDataWithFilter(EventsSingleton.events, keywords, location, startTimeInMilliseconds, endTimeInMilliseconds, favoriteFilter)
                 alertDialog.hide()
             }
 

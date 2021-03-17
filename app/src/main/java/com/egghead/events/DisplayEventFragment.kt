@@ -1,6 +1,8 @@
 package com.egghead.events
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -62,6 +65,7 @@ class DisplayEventFragment : Fragment() {
 
         val titleView: TextView = view.findViewById(R.id.event_title)
         val descriptionView: TextView = view.findViewById(R.id.event_description)
+        val calendar: Button = view.findViewById(R.id.event_calendar_button)
         val startTimestampView: TextView = view.findViewById(R.id.event_start_timestamp)
         val endTimestampView: TextView = view.findViewById(R.id.event_end_timestamp)
         val locationView : TextView = view.findViewById(R.id.event_location)
@@ -106,10 +110,46 @@ class DisplayEventFragment : Fragment() {
             }
         }
 
-        view.findViewById<Button>(R.id.back_button).setOnClickListener {
-            val action = R.id.action_displayEventFragment_to_eventFeedFragment
-            findNavController().navigate(action)
+        if (FirebaseAuth.getInstance().currentUser?.isAnonymous ?: true) {
+            favorited.visibility = View.GONE
         }
 
+        favorited.setOnClickListener {
+            // First update the singleton
+            var position = 0
+            var found = -1
+            for (recur_event in EventsSingleton.events) {
+                if (recur_event.documentId == event.documentId) {
+                    EventsSingleton.events[position].favorited = !EventsSingleton.events[position].favorited
+                    found = position
+                }
+                position++
+            }
+
+            // then update the actual list on the way back
+            EventFirestore.postFavorites {
+                if (found != -1) {
+                    if (EventsSingleton.events[found].favorited) {
+                        favorited.setBackgroundResource(R.drawable.ic_star_filled_24px)
+                    } else {
+                        favorited.setBackgroundResource(R.drawable.ic_star_unfilled_24px)
+                    }
+                }
+            }
+        }
+
+        calendar.setOnClickListener {
+            // https://stackoverflow.com/questions/14694931/insert-event-to-calendar-using-intent
+            val intent = Intent(Intent.ACTION_EDIT)
+            intent.type = "vnd.android.cursor.item/event"
+            intent.putExtra(CalendarContract.Events.TITLE, event.title)
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.start.toDate().time)
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.end.toDate().time)
+            intent.putExtra(CalendarContract.Events.ALL_DAY, false)
+            intent.putExtra(CalendarContract.Events.DESCRIPTION, event.description)
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
+
+            startActivity(intent, null)
+        }
     }
 }

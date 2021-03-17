@@ -1,7 +1,10 @@
 package com.egghead.events
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,14 +12,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
 import io.grpc.okhttp.internal.Platform
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,6 +35,10 @@ class UpdateEventFragment : Fragment() {
 
     var startTimeInMilliseconds : Long = 0
     var endTimeInMilliseconds : Long = 0
+    var eventImageView: ImageView? = null
+    var eventCardView: CardView? = null
+    var imageUri : Uri? = null
+    var imageType : String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +53,9 @@ class UpdateEventFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val event : Event = args.event
+
+        startTimeInMilliseconds = event.start.toDate().time
+        endTimeInMilliseconds = event.end.toDate().time
 
         val titleView: TextView = view.findViewById(R.id.event_title)
         val descriptionView: TextView = view.findViewById(R.id.event_description)
@@ -64,21 +79,105 @@ class UpdateEventFragment : Fragment() {
             pickDateTime(endTimestampView)
         }
 
+        view.findViewById<Button>(R.id.upload_image_button).setOnClickListener {
+            chooseImage()
+        }
+
         view.findViewById<Button>(R.id.submit_button).setOnClickListener {
+
+
             event.title = titleView.text.toString()
             event.description = descriptionView.text.toString()
             event.location = locationView.text.toString()
             event.start = Timestamp(Date(startTimeInMilliseconds))
             event.end = Timestamp(Date(endTimeInMilliseconds))
 
-            EventFirestore.updateEvent(event) { response ->
+
+            if (event.title == "" || startTimeInMilliseconds == 0.toLong() || endTimeInMilliseconds == 0.toLong()) {
+                makeSnackbar("Missing required information.")
+                return@setOnClickListener
+            } else if (startTimeInMilliseconds > endTimeInMilliseconds) {
+                makeSnackbar("Event cannot start after it ended.")
+                return@setOnClickListener
+            }
+
+            this.uploadImage { response, downloadUrl ->
+
                 if (response == ResponseType.SUCCESS) {
-                    Log.d("post", "successfully updated event")
-                    val action : NavDirections = UpdateEventFragmentDirections.actionUpdateEventFragmentToDisplayEventFragment(event)
-                    findNavController().navigate(action)
-                } else {
-                    Log.d("post", "could not update event")
+                    event.image = downloadUrl
                 }
+
+                EventFirestore.updateEvent(event) { response ->
+                    if (response == ResponseType.SUCCESS) {
+                        Log.d("post", "successfully updated event")
+                        val action : NavDirections = UpdateEventFragmentDirections.actionUpdateEventFragmentToDisplayEventFragment(event)
+                        findNavController().navigate(action)
+                    } else {
+                        Log.d("post", "could not update event")
+                    }
+                }
+            }
+        }
+
+        eventImageView = view.findViewById(R.id.event_image)
+        eventImageView?.visibility = View.GONE
+
+        eventCardView = view.findViewById(R.id.image_card_view)
+        eventCardView?.visibility = View.GONE
+    }
+
+    private fun makeSnackbar(message: String) {
+        Snackbar
+            .make(requireView(), message, Snackbar.LENGTH_LONG)
+            .apply { view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 4 }
+            .show()
+    }
+
+    private fun uploadImage(completion: (response: ResponseType, downloadUrl: String) -> Unit ) {
+        imageUri?.let {
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+            val storageRef = FirebaseStorage.getInstance().reference
+            val imageRef = storageRef.child("${uid}/${imageUri?.lastPathSegment ?: "unknown.jpg"}")
+            val metadata = StorageMetadata.Builder().setContentType(imageType ?: "image/jpeg").build()
+
+            val uploadTask = imageRef.putFile(imageUri!!, metadata)
+
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        completion(ResponseType.SUCCESS, task.result.toString())
+                    } else {
+                        completion(ResponseType.FAILURE, "")
+                    }
+                }
+        } ?: run {
+            completion(ResponseType.FAILURE, "")
+        }
+    }
+
+    private fun chooseImage() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("image/*")
+        startActivityForResult(intent, 2020)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 2020) {
+            if (resultCode == Activity.RESULT_OK) {
+                imageUri = data?.data
+                imageType = data?.type
+                eventImageView?.setImageURI(imageUri)
+                eventImageView?.visibility = View.VISIBLE
+                eventCardView?.visibility = View.VISIBLE
             }
         }
     }

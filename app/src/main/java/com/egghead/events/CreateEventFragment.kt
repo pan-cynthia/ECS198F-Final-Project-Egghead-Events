@@ -88,6 +88,7 @@ class CreateEventFragment : Fragment() {
                 var event: Event? = null
 
                 if (response == ResponseType.SUCCESS) {
+                    Log.d("post", "image was successfully uploaded")
                     event = Event(
                         title = title,
                         description = description,
@@ -107,7 +108,7 @@ class CreateEventFragment : Fragment() {
                 }
 
                 EventFirestore.postEvent(event) {
-                    if (response == ResponseType.SUCCESS) {
+                    if (it == ResponseType.SUCCESS) {
                         Log.d("post", "successfully posted event")
                         val action = R.id.action_createEventFragment_to_eventFeedFragment
                         this.findNavController().navigate(action)

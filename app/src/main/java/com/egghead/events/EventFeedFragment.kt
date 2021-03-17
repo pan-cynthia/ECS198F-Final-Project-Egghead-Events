@@ -33,7 +33,6 @@ class EventFeedFragment : Fragment() {
     private lateinit var alertDialog: AlertDialog
     var startTimeInMilliseconds : Long = 0
     var endTimeInMilliseconds : Long = 0
-    private lateinit var faveventlist: List<Event>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

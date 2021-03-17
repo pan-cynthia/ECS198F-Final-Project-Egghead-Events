@@ -1,83 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".DisplayEventFragment"
-    android:id="@+id/topparent">
+    tools:context=".DisplayEventFragment">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/topbuttons"
-        tools:ignore="MissingConstraints">
-        <Button
-            android:id="@+id/back_button"
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="Back"/>
-        <Button
-            android:id="@+id/event_favorite_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/ic_star_filled_24px"
-            android:layout_gravity="center">
-        </Button>
-    </LinearLayout>
+        android:layout_margin="15dp"
+        android:text="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/event_favorite_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:layout_margin="15dp"
+        android:background="@drawable/ic_star_filled_24px"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/event_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/customborder"
         android:layout_margin="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/topbuttons">
+        android:background="@drawable/customborder"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/back_button">
 
         <TextView
             android:id="@+id/event_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:text="Event Title"
-            android:textStyle="bold"
             android:textSize="25dp"
-            android:layout_marginBottom="20dp"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-
             <TextView
                 android:id="@+id/event_start_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Start Date/Time"
-                android:textStyle="bold"
-                android:layout_gravity="center">
-            </TextView>
+                android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="   -   "
-                android:textStyle="bold">
-            </TextView>
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/event_end_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="End Date/Time"
-                android:textStyle="bold"
-                android:layout_gravity="center">
-            </TextView>
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -85,19 +77,35 @@
             android:id="@+id/event_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location"
-            android:textStyle="bold"
-            android:textSize="15dp"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp"/>
+            android:paddingBottom="5dp"
+            android:text="Location"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/image_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp">
+
+            <ImageView
+                android:id="@+id/event_image"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+            </ImageView>
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/event_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="20dp"
             android:text="Description"
-            android:textSize="20dp"
-            android:paddingTop="20dp"/>
+            android:textSize="20dp" />
 
     </LinearLayout>
 
@@ -109,6 +117,17 @@
         android:layout_marginBottom="56dp"
         android:clickable="true"
         android:src="@drawable/ic_edit_24px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="112dp"
+        android:layout_marginBottom="56dp"
+        android:clickable="true"
+        android:src="@drawable/ic_delete_24px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

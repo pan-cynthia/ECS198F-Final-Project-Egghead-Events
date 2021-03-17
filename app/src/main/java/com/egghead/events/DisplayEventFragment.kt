@@ -10,10 +10,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
@@ -37,6 +39,7 @@ class DisplayEventFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_display_event, container, false)
         view.findViewById<FloatingActionButton>(R.id.edit_button).hide()
+        view.findViewById<FloatingActionButton>(R.id.delete_button).hide()
         view.findViewById<Button>(R.id.event_favorite_button).visibility= View.VISIBLE
         return view
     }
@@ -49,6 +52,7 @@ class DisplayEventFragment : Fragment() {
         val user = FirebaseAuth.getInstance().currentUser
         if (event.uid == user.uid) {
             view.findViewById<FloatingActionButton>(R.id.edit_button).show()
+            view.findViewById<FloatingActionButton>(R.id.delete_button).show()
         }
         if (user.isAnonymous) {
             view.findViewById<Button>(R.id.event_favorite_button).visibility= View.GONE
@@ -62,6 +66,8 @@ class DisplayEventFragment : Fragment() {
         val endTimestampView: TextView = view.findViewById(R.id.event_end_timestamp)
         val locationView : TextView = view.findViewById(R.id.event_location)
         val favorited: Button = view.findViewById(R.id.event_favorite_button)
+        val imageView : ImageView = view.findViewById(R.id.event_image)
+        val cardView: CardView = view.findViewById(R.id.image_card_view)
 
         titleView.text = event.title
         descriptionView.text = event.description
@@ -69,6 +75,14 @@ class DisplayEventFragment : Fragment() {
         if (event.favorited == false){
             favorited.setBackgroundResource(R.drawable.ic_star_unfilled_24px)
             favoriteFilter = false
+        }
+        if (event.image != null) {
+            Glide.with(view)
+                .load(event.image)
+                .into(imageView)
+        } else {
+            cardView.visibility = View.GONE
+            imageView.visibility = View.GONE
         }
 
         val formatter = SimpleDateFormat("MMM dd yyyy HH:mm", Locale.US)
@@ -78,6 +92,18 @@ class DisplayEventFragment : Fragment() {
         view.findViewById<FloatingActionButton>(R.id.edit_button).setOnClickListener {
             val action : NavDirections = DisplayEventFragmentDirections.actionDisplayEventFragmentToUpdateEventFragment(event)
             findNavController().navigate(action)
+        }
+
+        view.findViewById<FloatingActionButton>(R.id.delete_button).setOnClickListener {
+            EventFirestore.deleteEvent(event) { response ->
+                if (response == ResponseType.SUCCESS) {
+                    Log.d("delete", "successfully deleted event")
+                    val action = R.id.action_displayEventFragment_to_eventFeedFragment
+                    this.findNavController().navigate(action)
+                } else {
+                    Log.d("delete", "could not delete event")
+                }
+            }
         }
 
         view.findViewById<Button>(R.id.back_button).setOnClickListener {

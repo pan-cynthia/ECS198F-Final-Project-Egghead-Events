@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -74,6 +75,26 @@ class EventListAdapter(private var events: List<Event>, private val mNavControll
         for (anEvent in newEvents){
             if (anEvent.title.contains(search, ignoreCase = true) || anEvent.description.contains(search, ignoreCase = true)){
                 tempevents.add(anEvent)
+            }
+        }
+        events = tempevents
+        Log.d("EventListAdapter", "Got new posts")
+        this.notifyDataSetChanged()
+    }
+
+    fun setDataWithFilter(newEvents: List<Event>, search: String, searchlocation: String, starttime: Long , endtime: Long, favoriteFilter: Boolean){
+        val tempevents = mutableListOf<Event>()
+        for (anEvent in newEvents){
+            if (anEvent.title.contains(search, ignoreCase = true) || anEvent.description.contains(search, ignoreCase = true)){
+                if (anEvent.location.contains(searchlocation, ignoreCase = true)) {
+                    if (anEvent.start > Timestamp(Date(starttime)) || starttime == 0L && anEvent.end < Timestamp(Date(starttime))) {
+                        if (anEvent.end < Timestamp(Date(endtime)) || endtime == 0L) {
+                            if (anEvent.favorited == true || favoriteFilter == false) {
+                                tempevents.add(anEvent)
+                            }
+                        }
+                    }
+                }
             }
         }
         events = tempevents

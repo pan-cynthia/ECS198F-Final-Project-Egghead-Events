@@ -38,6 +38,8 @@ class EventListAdapter(private var events: List<Event>) : RecyclerView.Adapter<I
                 Glide.with(holder.itemView)
                     .load(item.image)
                     .into(imageView)
+                cardView.visibility = View.VISIBLE
+                imageView.visibility = View.VISIBLE
             } else {
                 cardView.visibility = View.GONE
                 imageView.visibility = View.GONE
@@ -54,6 +56,7 @@ class EventListAdapter(private var events: List<Event>) : RecyclerView.Adapter<I
                 // then update the actual list on the way back
                 EventFirestore.postFavorites {
                     setData(EventsSingleton.events)
+                    notifyItemChanged(position)
 
                     if (events[position].favorited) {
                         favoriteButton.setBackgroundResource(R.drawable.ic_star_filled_24px)
@@ -95,6 +98,7 @@ class EventListAdapter(private var events: List<Event>) : RecyclerView.Adapter<I
 
     fun setData(newEvents: List<Event>) {
         events = newEvents
+        Log.d("EVENTS", events.toString())
         Log.d("EventListAdapter", "Got new posts")
         this.notifyDataSetChanged()
     }

@@ -19,6 +19,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.milliseconds
@@ -49,6 +50,10 @@ class EventListAdapter(private var events: List<Event>) : RecyclerView.Adapter<I
             startTimestampView.text = formatter.format(item.start.toDate())
             endTimestampView.text = formatter.format(item.end.toDate())
 
+            if (FirebaseAuth.getInstance().currentUser?.isAnonymous ?: true) {
+                favoriteButton.visibility = View.GONE
+            }
+
             favoriteButton.setOnClickListener {
                 // First update the singleton
                 EventsSingleton.events[position].favorited = !EventsSingleton.events[position].favorited
@@ -69,7 +74,7 @@ class EventListAdapter(private var events: List<Event>) : RecyclerView.Adapter<I
             calendarButton.setOnClickListener {
                 // https://stackoverflow.com/questions/14694931/insert-event-to-calendar-using-intent
                 val intent = Intent(Intent.ACTION_EDIT)
-                intent.setType("vnd.android.cursor.item/event")
+                intent.type = "vnd.android.cursor.item/event"
                 intent.putExtra(CalendarContract.Events.TITLE, item.title)
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.start.toDate().time)
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.end.toDate().time)

@@ -75,40 +75,6 @@ class CreateEventFragment : Fragment() {
             chooseImage()
         }
 
-        val description = view.findViewById<EditText>(R.id.event_description)
-
-        description.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            Log.d("TEST", "TEST")
-            if (!hasFocus) {
-                this.context?.let {
-                    var offset = 0
-                    var startOffset = 0
-                    var inHashtag = false
-
-                    val color = ContextCompat.getColor(it, R.color.teal_200)
-                    val colorSpan = ForegroundColorSpan(color)
-
-                    val flag = Spannable.SPAN_INCLUSIVE_INCLUSIVE
-
-                    for (character in description.text.toString()) {
-                        if (character == '#') {
-                            startOffset = offset
-                            inHashtag = true
-                        }
-
-                        if (character == ' ') {
-                            if (inHashtag) {
-                                description.text.setSpan(colorSpan, startOffset, offset, flag)
-                            }
-                            inHashtag = false
-                        }
-
-                        offset++
-                    }
-                }
-            }
-        }
-
         view.findViewById<Button>(R.id.submit_button).setOnClickListener {
             val title = view.findViewById<EditText>(R.id.event_title).text.toString()
             val description = view.findViewById<EditText>(R.id.event_description).text.toString()

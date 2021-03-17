@@ -131,6 +131,8 @@ class EventFeedFragment : Fragment() {
 
         val filterButton = view.findViewById<Button>(R.id.filterfilterbutton)
         filterButton.setOnClickListener {
+            startTimeInMilliseconds = 0
+            endTimeInMilliseconds = 0
             val inflater: LayoutInflater = this.getLayoutInflater()
             val dialogView: View = inflater.inflate(R.layout.filter_pop_up, null)
 

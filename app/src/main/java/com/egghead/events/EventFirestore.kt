@@ -70,6 +70,22 @@ class EventFirestore {
                 }
         }
 
+        fun deleteEvent(event: Event, completion: (response: ResponseType) -> Unit) {
+            Log.d("delete", "entered delete event")
+
+            val firestore = FirebaseFirestore.getInstance()
+            firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+
+            firestore.collection("events").document(event.documentId)
+                .delete()
+                .addOnSuccessListener {
+                    completion(ResponseType.SUCCESS)
+                }
+                .addOnFailureListener {
+                    completion(ResponseType.FAILURE)
+                }
+        }
+
         fun getAllEvents(setEvents: (events: ArrayList<Event>) -> Unit) {
             val firestore = FirebaseFirestore.getInstance()
             firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()

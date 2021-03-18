@@ -5,7 +5,7 @@ Group Members:
 3. twyoung@ucdavis.edu, Tina Young, 915885653
 4. mxwang@ucdavis.edu, Megan Wang, 914735597
 
-Google Drive Video: 
+Video: https://www.youtube.com/watch?v=HvdTllVKV64
 
 Presentation Slides:
 https://docs.google.com/presentation/d/1_ojWcWDiUAAQOGTQJvhW1euumnLxpvdWrCBtI0CGXw4/edit?usp=sharing

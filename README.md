@@ -12,4 +12,7 @@ tab in Android Studio, click on Tasks -> android -> signingReport and execute th
 Then send the SHA-1 key labeled as "Variant: debug" either to smkuhne@ucdavis.edu, or
 ArtificialStupidity#1405 on Discord.
 
-Google Drive Video: 
+Video: https://www.youtube.com/watch?v=HvdTllVKV64
+
+Presentation Slides:
+https://docs.google.com/presentation/d/1_ojWcWDiUAAQOGTQJvhW1euumnLxpvdWrCBtI0CGXw4/edit?usp=sharing
